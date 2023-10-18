@@ -8,43 +8,56 @@
 */
 int execute(char **args, char **env)
 {
-	pid_t pid;
-	int status;
-	char *path;
+        pid_t pid;
+        int status;
+        char *path;
+        char *token;
 
-	pid = fork();
-	if (pid == -1)
-		return (-1);
-	if (pid == 0)
-	{
-		if (args[0][0] == '/' || args[0][0] == '.')
-			path = args[0];
-		else
-			path = find_path(args[0], env);
-		if (path == NULL)
-		{
-			free(path);
-			return (NULL);
-		}
-		if (path[0] == '\0' || strrchr(path, ':') == path + _strlen(path))
-			token = ".";
-		else
-			token = strtok(path, ":");
-		while (token != NULL)
-		{
-			buffer = malloc(sizeof(char) * (_strlen(token) + _strlen(cmd) + 2));
-			if (buffer == NULL)
-				return (NULL);
-			_strcpy(buffer, token);
-			_strcat(buffer, "/");
-			_strcat(buffer, cmd);
-			if (access(buffer, X_OK) == 0)
-				return (buffer);
-			free(buffet);
-			token = strtok(NULL, ":");
-		}
-	}
-	return (NULL);
+        pid = fork();
+        if (pid == -1)
+                return (-1);
+        if (pid == 0)
+        {
+                if (args[0][0] == '/' || args[0][0] == '.')
+                        path = args[0];
+                else
+                        path = find_path(args[0], env);
+                if (path == NULL)
+                        return (-1);
+
+                token = strtok(path, ":");
+                while (token != NULL)
+                {
+                        char *buffer = malloc(sizeof(char) * (_strlen(token) + _strlen(args[0]) + 2));
+                        if (buffer == NULL)
+                        {
+                                free(path);
+                                return (-1);
+                        }
+
+                        strcpy(buffer, token);
+                        strcat(buffer, "/");
+                        strcat(buffer, args[0]);
+
+                        if (access(buffer, X_OK) == 0)
+                        {
+                                execve(buffer, args, env);
+                                perror("execve");
+                                free(buffer);
+                                free(path);
+                                exit(1);
+                        }
+
+                        free(buffer);
+                        token = strtok(NULL, ":");
+                }
+
+                free(path);
+                exit(1);
+        }
+
+        waitpid(pid, &status, 0);
+        return (status);
 }
 
 /**
@@ -53,8 +66,8 @@ int execute(char **args, char **env)
 */
 void sigint_handler(int signum)
 {
-	(void)signum;
-	write(STDOUT_FILENO, "\n$ ", 3);
+        (void)signum;
+        write(STDOUT_FILENO, "\n$ ", 3);
 }
 
 /**
@@ -63,11 +76,15 @@ void sigint_handler(int signum)
 */
 void print_env(char **env)
 {
-	int i;
+        int i;
 
-	for (i = 0; env[i] != NULL; i++)
-	{
-		write(STDOUT_FILENO, env[i], strlen(env[i]));
-		write(STDOUT_FILENO, "\n", 1);
-	}
+        for (i = 0; env[i] != NULL; i++)
+        {
+                if (env[i] != NULL) {
+                        write(STDOUT_FILENO, env[i], strlen(env[i]));
+ 
+                       write(STDOUT_FILENO, "\n", 1);
+                }
+        }
 }
+

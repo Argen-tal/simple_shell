@@ -7,6 +7,48 @@
  * @env: The array of environment variables
  * Return: 0 on success, or the exit status of the last command executed
  */
+/**
+ * find_path - Find the path to a command.
+ * @cmd: The command name.
+ * @env: The array of environment variables.
+ * Return: The path to the command, or NULL if the command cannot be found.
+ */
+
+char *find_path(char *cmd, char **env)
+{
+    char *path, *dir;
+    int i;
+
+    for (i = 0; env[i] != NULL; i++) {
+        if (strncmp(env[i], "PATH=", 5) == 0) {
+            path = env[i];
+            break;
+        }
+    }
+
+    if (path == NULL) {
+        return NULL;
+    }
+
+    while ((dir = strtok(path, ":")) != NULL) {
+        char *full_path = malloc(sizeof(char) * (_strlen(dir) + _strlen(cmd) + 2));
+        if (full_path == NULL) {
+            return NULL;
+        }
+
+        strcpy(full_path, dir);
+        strcat(full_path, "/");
+        strcat(full_path, cmd);
+
+        if (access(full_path, X_OK) == 0) {
+            return full_path;
+        }
+
+        free(full_path);
+    }
+
+    return NULL;
+}
 int main(int argc, char **argv, char **env)
 {
     char *line = NULL;
@@ -52,20 +94,20 @@ int main(int argc, char **argv, char **env)
         }
         args[i] = NULL;
 
-        if (_strcmp(args[0], "exit") == 0) {
+        if (strcmp(args[0], "exit") == 0) {
             free(line);
             free(args);
             exit(0);
         }
 
-        if (_strcmp(args[0], "env") == 0) {
+        if (strcmp(args[0], "env") == 0) {
             print_env(env);
             free(line);
             free(args);
             continue;
         }
 
-        status = execute_cmd(args, env);
+        status = execute(args, env);
         if (status == -1) {
             perror("Error");
         }
@@ -74,41 +116,5 @@ int main(int argc, char **argv, char **env)
     }
 
     free(line);
-    return (status);
+return (status);
 }
-
-/**
- * execute_cmd - Execute a command.
- * @args: The array of arguments.
- * @env: The array of environment variables.
- * Return: 0 on success, or -1 on failure.
- */
-int execute_cmd(char **args, char **env)
-{
-    /* Find the command path.*/
-    char *path = find_path(args[0], env);
-    if (path == NULL) {
-        return -1;
-    }
-
-    /*Execute the command.*/
-    execve(path, args, env);
-
-    /* If we reach here, something went wrong.*/
-    perror("execve");
-    return -1;
-}
-
-/**
- * find_path - Find the path to a command.
- * @cmd: The command name.
- * @env: The array of environment variables.
- * Return: The path to the command, or NULL if the command cannot be found.
- */
-char *find_path(char *cmd, char **env)
-{
-
-    /*Return the path to the command, or NULL if the command cannot be found.*/
-    return path;
-}
-

@@ -20,7 +20,7 @@ char *find_path(char *cmd, char **env);
 char *_getenv(const char *name, char **env);
 size_t _strlen(const char *s);
 char *_strcpy(char *dest, const char *src);
-char *_strcat(char *dest const char *sec);
+char *_strcat(char *dest, const char *sec);
 int _strcmp(const char *s1, const char *s2);
 void print_env(char **env);
 
