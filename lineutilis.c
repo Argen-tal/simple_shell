@@ -1,4 +1,4 @@
-#include "custom_shell.h"
+#include "shell.h"
 
 /**
  * custom_input_buf - buffers chained commands
@@ -15,7 +15,7 @@ ssize_t custom_input_buf(custom_info_t *info, char **buf, size_t *len)
 
     if (!*len) /* if nothing left in the buffer, fill it */
     {
-        custom_free(*buf);
+        free(*buf);
         *buf = NULL;
         signal(SIGINT, custom_sigintHandler);
 #if CUSTOM_USE_GETLINE
@@ -102,7 +102,7 @@ ssize_t custom_read_buf(custom_info_t *info, char *buf, size_t *i)
 
     if (*i)
         return 0;
-    r = read(info->readfd, buf, READ_BUF_SIZE);
+    r = read(info->readfd, buf, CUSTOM_READ_BUF_SIZE);
     if (r >= 0)
         *i = r;
     return r;
@@ -118,7 +118,7 @@ ssize_t custom_read_buf(custom_info_t *info, char *buf, size_t *i)
  */
 int custom_getline(custom_info_t *info, char **ptr, size_t *length)
 {
-    static char buf[READ_BUF_SIZE];
+    static char buf[CUSTOM_READ_BUF_SIZE];
     static size_t i, len;
     size_t k;
     ssize_t r = 0, s = 0;
@@ -137,8 +137,8 @@ int custom_getline(custom_info_t *info, char **ptr, size_t *length)
     c = custom_strchr(buf + i, '\n');
     k = c ? 1 + (unsigned int)(c - buf) : len;
     new_p = custom_realloc(p, s, s ? s + k : k + 1);
-    if (!new_p) /* MALLOC FAILURE! */
-        return (p ? custom_free(p), -1 : -1);
+    if (!new_p)
+        return (p ? free(p), -1 : -1);
 
     if (s)
         custom_strncat(new_p, buf + i, k - i);
@@ -165,6 +165,6 @@ void custom_sigintHandler(__attribute__((unused))int sig_num)
 {
     custom_puts("\n");
     custom_puts("$ ");
-    custom_putchar(BUF_FLUSH);
+    custom_putchar(CUSTOM_BUF_FLUSH);
 }
 

@@ -134,7 +134,7 @@ char *custom_strchr(char *, char);
 char **custom_strtow(char *, char *);
 char **custom_strtow2(char *, char);
 char *custom_memset(char *, char, unsigned int);
-void custom_ffree(char **info);
+void custom_ffree(char **);
 void *custom_realloc(void *, unsigned int, unsigned int);
 int custom_bfree(void **);
 int custom_interactive(custom_info_t *);

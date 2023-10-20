@@ -44,16 +44,16 @@ void *custom_realloc(void *ptr, unsigned int custom_old_size, unsigned int custo
 
     if (!ptr)
         return malloc(custom_new_size);
-    if (!new_size)
+    if (!custom_new_size)
         return (free(ptr), NULL);
-    if (new_size == old_size)
+    if (custom_new_size == custom_old_size)
         return ptr;
 
-    p = malloc(new_size);
+    p = malloc(custom_new_size);
     if (!p)
         return NULL;
 
-    old_size = old_size < custom_new_size ? custom_old_size : custom_new_size;
+    custom_old_size = custom_old_size < custom_new_size ? custom_old_size : custom_new_size;
     while (custom_old_size--)
         p[custom_old_size] = ((char *)ptr)[custom_old_size];
     free(ptr);

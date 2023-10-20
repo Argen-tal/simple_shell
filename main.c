@@ -11,8 +11,9 @@ int main(int ac, char **av)
 {
     custom_info_t info[] = { CUSTOM_INFO_INIT };
     int fd = 2;
+    int i;
 
-    for (int i = 0; i < ac; i++)
+    for (i = 0; i < ac; i++)
     {
         fd = open(av[i], O_RDONLY);
         if (fd == -1)

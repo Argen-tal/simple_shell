@@ -1,20 +1,19 @@
 #include "shell.h"
 
 /**
- * custom_clear_info - initializes info_t struct
+ * custom_clear_info - initializes custom_info_t struct
  * @info: struct address
  */
 void custom_clear_info(custom_info_t *info)
 {
-    custom_ffree(info->arg);
     info->arg = NULL;
-    custom_ffree(info->argv);
     info->argv = NULL;
+    info->path = NULL;
     info->argc = 0;
 }
 
 /**
- * custom_set_info - initializes info_t struct
+ * custom_set_info - initializes custom_info_t struct
  * @info: struct address
  * @av: argument vector
  */
@@ -38,13 +37,14 @@ void custom_set_info(custom_info_t *info, char **av)
         for (i = 0; info->argv && info->argv[i]; i++)
             ;
         info->argc = i;
+
         custom_replace_alias(info);
         custom_replace_vars(info);
     }
 }
 
 /**
- * custom_free_info - frees info_t struct fields
+ * custom_free_info - frees custom_info_t struct fields
  * @info: struct address
  * @all: true if freeing all fields
  */
@@ -52,12 +52,11 @@ void custom_free_info(custom_info_t *info, int all)
 {
     custom_ffree(info->argv);
     info->argv = NULL;
-    custom_ffree(info->path);
     info->path = NULL;
     if (all)
     {
         if (!info->cmd_buf)
-            custom_ffree(info->arg);
+            free(info->arg);
         if (info->env)
             custom_free_list(&(info->env));
         if (info->history)
@@ -69,7 +68,7 @@ void custom_free_info(custom_info_t *info, int all)
         custom_bfree((void **)info->cmd_buf);
         if (info->readfd > 2)
             close(info->readfd);
-        custom_putchar(BUF_FLUSH);
+        custom_putchar(CUSTOM_BUF_FLUSH);
     }
 }
 
