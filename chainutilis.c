@@ -144,4 +144,9 @@ int custom_replace_vars(custom_info_t *info)
  *
  * Return: 1 if replaced, 0 otherwise
  */
-
+int custom_replace_string(char **old, char *new)
+{
+	free(*old);
+	*old = new;
+	return (1);
+}
