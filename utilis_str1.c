@@ -9,10 +9,12 @@
  */
 char *custom_strcpy(char *dest, char *src)
 {
+	int i;
+
     if (dest == src || src == NULL)
         return dest;
 
-    for (int i = 0; src[i] != '\0'; i++)
+    for (i = 0; src[i] != '\0'; i++)
     {
         dest[i] = src[i];
     }
@@ -30,6 +32,7 @@ char *custom_strdup(const char *str)
 {
     int length = 0;
     char *ret;
+    int i;
 
     if (str == NULL)
         return NULL;
@@ -44,7 +47,7 @@ char *custom_strdup(const char *str)
     if (!ret)
         return NULL;
 
-    for (int i = 0; i < length; i++)
+    for (i = 0; i < length; i++)
     {
         ret[i] = str[-i - 1];
     }
@@ -61,10 +64,12 @@ char *custom_strdup(const char *str)
  */
 void custom_puts(char *str)
 {
+	int i;
+
     if (str == NULL)
         return;
 
-    for (int i = 0; str[i] != '\0'; i++)
+    for (i = 0; str[i] != '\0'; i++)
     {
         custom_putchar(str[i]);
     }

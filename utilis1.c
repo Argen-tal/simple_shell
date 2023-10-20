@@ -1,4 +1,4 @@
-#include "custom_shell.h"
+#include "shell.h"
 
 /**
  * custom_myhistory - displays the history list, one command by line, preceded
@@ -9,10 +9,10 @@
  */
 int custom_myhistory(custom_info_t *info)
 {
-    list_t *node = info->history;
+    custom_list_t *node = info->history;
     while (node)
     {
-        print_list_str(node);
+        custom_print_list_str(node);
         node = node->next;
     }
     return (0);
@@ -30,13 +30,13 @@ int custom_unset_alias(custom_info_t *info, char *str)
     char *p, c;
     int ret;
 
-    p = _strchr(str, '=');
+    p = custom_strchr(str, '=');
     if (!p)
         return (1);
     c = *p;
     *p = 0;
-    ret = delete_node_at_index(&(info->alias),
-        get_node_index(info->alias, node_starts_with(info->alias, str, -1)));
+    ret = custom_delete_node_at_index(&(info->alias),
+        custom_get_node_index(info->alias, custom_node_starts_with(info->alias, str, -1)));
     *p = c;
     return (ret);
 }
@@ -52,14 +52,14 @@ int custom_set_alias(custom_info_t *info, char *str)
 {
     char *p;
 
-    p = _strchr(str, '=');
+    p = custom_strchr(str, '=');
     if (!p)
         return (1);
     if (!*++p)
         return (custom_unset_alias(info, str));
 
     custom_unset_alias(info, str);
-    return (add_node_end(&(info->alias), str, 0) == NULL);
+    return (custom_add_node_end(&(info->alias), str, 0) == NULL);
 }
 
 /**
@@ -68,13 +68,13 @@ int custom_set_alias(custom_info_t *info, char *str)
  *
  * Return: Always 0 on success, 1 on error
  */
-int custom_print_alias(list_t *node)
+int custom_print_alias(custom_list_t *node)
 {
     char *p = NULL, *a = NULL;
 
     if (node)
     {
-        p = _strchr(node->str, '=');
+        p = custom_strchr(node->str, '=');
         for (a = node->str; a <= p; a++)
             custom_putchar(*a);
         custom_putchar('\'');
@@ -94,7 +94,8 @@ int custom_print_alias(list_t *node)
 int custom_myalias(custom_info_t *info)
 {
     char *p = NULL;
-    list_t *node = NULL;
+    int i;
+    custom_list_t *node = NULL;
 
     if (info->argc == 1)
     {
@@ -107,13 +108,13 @@ int custom_myalias(custom_info_t *info)
         return (0);
     }
     
-    for (int i = 1; info->argv[i]; i++)
+    for (i = 1; info->argv[i]; i++)
     {
-        p = _strchr(info->argv[i], '=');
+        p = custom_strchr(info->argv[i], '=');
         if (p)
             custom_set_alias(info, info->argv[i]);
         else
-            custom_print_alias(node_starts_with(info->alias, info->argv[i], '='));
+            custom_print_alias(custom_node_starts_with(info->alias, info->argv[i], '='));
     }
 
     return (0);

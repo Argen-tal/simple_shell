@@ -36,7 +36,7 @@ int custom_erratoi(char *s)
  * Return: 0 if no numbers in string, converted number otherwise
  *        -1 on error
  */
-void custom_print_error(info_t *info, char *estr)
+void custom_print_error(custom_info_t *info, char *estr)
 {
     custom_eputs(info->fname);
     custom_eputs(": ");
@@ -132,7 +132,9 @@ char *custom_convert_number(long int num, int base, int flags)
  */
 void custom_remove_comments(char *buf)
 {
-    for (int i = 0; buf[i] != '\0'; i++)
+	int i;
+
+    for (i = 0; buf[i] != '\0'; i++)
     {
         if (buf[i] == '#' && (!i || buf[i - 1] == ' '))
         {

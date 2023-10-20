@@ -6,7 +6,7 @@
  *          constant function prototype.
  * Return: Always 0
  */
-char **custom_get_environ(info_t *info)
+char **custom_get_environ(custom_info_t *info)
 {
     if (!info->environ || info->env_changed)
     {
@@ -24,9 +24,9 @@ char **custom_get_environ(info_t *info)
  *  Return: 1 on delete, 0 otherwise
  * @var: the string env var property
  */
-int custom_unsetenv(info_t *info, char *var)
+int custom_unsetenv(custom_info_t *info, char *var)
 {
-    list_t *node = info->env;
+    custom_list_t *node = info->env;
     size_t i = 0;
     char *p;
 
@@ -58,10 +58,10 @@ int custom_unsetenv(info_t *info, char *var)
  * @value: the string env var value
  *  Return: Always 0
  */
-int custom_setenv(info_t *info, char *var, char *value)
+int custom_setenv(custom_info_t *info, char *var, char *value)
 {
     char *buf = NULL;
-    list_t *node;
+   custom_list_t *node;
     char *p;
 
     if (!var || !value)

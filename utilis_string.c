@@ -8,17 +8,15 @@
  */
 int custom_strlen(char *s)
 {
-    if (!s)
-        return 0;
+	int i = 0;
 
-    int i;
-    for (i = 0; s[i] != '\0'; i++)
-    {
-        // Count the characters in the string.
-    }
-    return i;
+	if (!s)
+		return (0);
+
+	while (*s++)
+		i++;
+	return (i);
 }
-
 /**
  * custom_strcmp - performs lexicographic comparison of two strings.
  * @s1: the first string
@@ -28,7 +26,9 @@ int custom_strlen(char *s)
  */
 int custom_strcmp(char *s1, char *s2)
 {
-    for (int i = 0; s1[i] != '\0' && s2[i] != '\0'; i++)
+	int i;
+
+    for (i = 0; s1[i] != '\0' && s2[i] != '\0'; i++)
     {
         if (s1[i] != s2[i])
             return s1[i] - s2[i];
@@ -48,7 +48,9 @@ int custom_strcmp(char *s1, char *s2)
  */
 char *custom_starts_with(const char *haystack, const char *needle)
 {
-    for (int i = 0; needle[i] != '\0'; i++)
+	int i;
+
+    for (i = 0; needle[i] != '\0'; i++)
     {
         if (needle[i] != haystack[i])
             return NULL;
@@ -72,6 +74,6 @@ char *custom_strcat(char *dest, char *src)
     while (*src)
         *dest++ = *src++;
     *dest = *src;
-    return ret;
+    return (ret);
 }
 

@@ -8,10 +8,10 @@
  */
 int custom_myenv(custom_info_t *info)
 {
-    list_t *node = info->env;
+    custom_list_t *node = info->env;
     while (node)
     {
-        print_list_str(node);
+        custom_print_list_str(node);
         node = node->next;
     }
     return (0);
@@ -26,12 +26,12 @@ int custom_myenv(custom_info_t *info)
  */
 char *custom_getenv(custom_info_t *info, const char *name)
 {
-    list_t *node = info->env;
+    custom_list_t *node = info->env;
     char *p;
 
     while (node)
     {
-        p = starts_with(node->str, name);
+        p = custom_starts_with(node->str, name);
         if (p && *p)
             return (p);
         node = node->next;
@@ -87,11 +87,11 @@ int custom_myunsetenv(custom_info_t *info)
  */
 int custom_populate_env_list(custom_info_t *info)
 {
-    list_t *node = NULL;
+    custom_list_t *node = NULL;
     size_t i;
 
     for (i = 0; environ[i]; i++)
-        add_node_end(&node, environ[i], 0);
+        custom_add_node_end(&node, environ[i], 0);
     info->env = node;
     return (0);
 }

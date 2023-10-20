@@ -10,6 +10,7 @@ char **custom_strtow(char *str, char *d)
 {
     int idx, token_idx, token_length, char_idx, num_tokens = 0;
     char **tokens;
+    int i;
 
     if (str == NULL || str[0] == '\0')
         return NULL;
@@ -43,7 +44,7 @@ char **custom_strtow(char *str, char *d)
         tokens[token_idx] = malloc((token_length + 1) * sizeof(char));
         if (!tokens[token_idx])
         {
-            for (int i = 0; i < token_idx; i++)
+            for (i = 0; i < token_idx; i++)
                 free(tokens[i]);
             free(tokens);
             return NULL;
@@ -69,6 +70,7 @@ char **custom_strtow2(char *str, char d)
 {
     int idx, token_idx, token_length, char_idx, num_tokens = 0;
     char **tokens;
+    int i;
 
     if (str == NULL || str[0] == '\0')
         return NULL;
@@ -100,7 +102,7 @@ char **custom_strtow2(char *str, char d)
         tokens[token_idx] = malloc((token_length + 1) * sizeof(char));
         if (!tokens[token_idx])
         {
-            for (int i = 0; i < token_idx; i++)
+            for (i = 0; i < token_idx; i++)
                 free(tokens[i]);
             free(tokens);
             return NULL;

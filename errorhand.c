@@ -1,4 +1,4 @@
-#include "custom_shell.h"
+#include "shell.h"
 
 /**
  * custom_eputs - prints an input string
@@ -8,9 +8,12 @@
  */
 void custom_eputs(char *str)
 {
+	int i;
+
     if (!str)
         return;
-    for (int i = 0; str[i] != '\0'; i++)
+
+    for (i = 0; str[i] != '\0'; i++)
     {
         custom_eputchar(str[i]);
     }
@@ -26,14 +29,14 @@ void custom_eputs(char *str)
 int custom_eputchar(char c)
 {
     static int i;
-    static char buf[WRITE_BUF_SIZE];
+    static char buf[CUSTOM_WRITE_BUF_SIZE];
 
-    if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+    if (c == CUSTOM_BUF_FLUSH || i >= CUSTOM_WRITE_BUF_SIZE)
     {
         write(2, buf, i);
         i = 0;
     }
-    if (c != BUF_FLUSH)
+    if (c != CUSTOM_BUF_FLUSH)
         buf[i++] = c;
     return (1);
 }
@@ -49,14 +52,14 @@ int custom_eputchar(char c)
 int custom_putfd(char c, int fd)
 {
     static int i;
-    static char buf[WRITE_BUF_SIZE];
+    static char buf[CUSTOM_WRITE_BUF_SIZE];
 
-    if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+    if (c == CUSTOM_BUF_FLUSH || i >= CUSTOM_WRITE_BUF_SIZE)
     {
         write(fd, buf, i);
         i = 0;
     }
-    if (c != BUF_FLUSH)
+    if (c != CUSTOM_BUF_FLUSH)
         buf[i++] = c;
     return (1);
 }
@@ -71,10 +74,11 @@ int custom_putfd(char c, int fd)
 int custom_putsfd(char *str, int fd)
 {
     int i = 0;
+    int j;
 
     if (!str)
         return (0);
-    for (int j = 0; str[j] != '\0'; j++)
+    for (j = 0; str[j] != '\0'; j++)
     {
         i += custom_putfd(str[j], fd);
     }

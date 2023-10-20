@@ -2,17 +2,16 @@
 
 /**
  * custom_myexit - exits the shell
- * @info: Structure containing potential arguments. Used to maintain
- * constant function prototype.
- *  Return: exits with a given exit status
- *         (0) if info.argv[0] != "exit"
+ * @info: Structure containing potential arguments.
+ * Return: exits with a given exit status (0) if info->argv[0] != "exit"
  */
 int custom_myexit(custom_info_t *info)
 {
     int exitcheck;
-
-    for (int i = 1; info->argv[i]; i++)  /* Check for exit argument */
-    {
+    int i;
+    
+    i = 1;
+    while (info->argv[i]) {  /* Check for exit argument */
         exitcheck = custom_erratoi(info->argv[i]);
         if (exitcheck == -1)
         {
@@ -31,29 +30,28 @@ int custom_myexit(custom_info_t *info)
 
 /**
  * custom_mycd - changes the current directory of the process
- * @info: Structure containing potential arguments. Used to maintain
- * constant function prototype.
- *  Return: Always 0
+ * @info: Structure containing potential arguments.
+ * Return: Always 0
  */
 int custom_mycd(custom_info_t *info)
 {
     char *s, *dir, buffer[1024];
     int chdir_ret;
-
+    int i;
+    
     s = getcwd(buffer, 1024);
     if (!s)
         custom_puts("TODO: >>getcwd failure emsg here<<\n");
     
-    for (int i = 1; info->argv[i]; i++)
+    i = 1;
+    while (info->argv[i])
     {
         if (!info->argv[i])
         {
             dir = custom_getenv(info, "HOME=");
             if (!dir)
                 chdir_ret = -1;
-                    chdir((dir = custom_getenv(info, "PWD=")) ? dir : "/");
-            else
-                chdir_ret = chdir(dir);
+            chdir((dir = custom_getenv(info, "PWD=")) ? dir : "/");
         }
         else if (custom_strcmp(info->argv[i], "-") == 0)
         {
@@ -63,9 +61,10 @@ int custom_mycd(custom_info_t *info)
                 custom_putchar('\n');
                 return (1);
             }
-            custom_puts(custom_getenv(info, "OLDPWD=")), custom_putchar('\n');
+            custom_puts(custom_getenv(info, "OLDPWD="));
+            custom_putchar('\n');
             chdir_ret = -1;
-                chdir((dir = custom_getenv(info, "OLDPWD=")) ? dir : "/");
+            chdir((dir = custom_getenv(info, "OLDPWD=")) ? dir : "/");
         }
         else
             chdir_ret = chdir(info->argv[i]);
@@ -73,13 +72,16 @@ int custom_mycd(custom_info_t *info)
         if (chdir_ret == -1)
         {
             custom_print_error(info, "can't cd to ");
-            custom_eputs(info->argv[i]), custom_eputchar('\n');
+            custom_eputs(info->argv[i]);
+            custom_eputchar('\n');
         }
         else
         {
             custom_setenv(info, "OLDPWD", custom_getenv(info, "PWD="));
             custom_setenv(info, "PWD", getcwd(buffer, 1024));
         }
+        
+        i++;
     }
     
     return (0);
@@ -87,22 +89,24 @@ int custom_mycd(custom_info_t *info)
 
 /**
  * custom_myhelp - displays help information
- * @info: Structure containing potential arguments. Used to maintain
- * constant function prototype.
- *  Return: Always 0
+ * @info: Structure containing potential arguments.
+ * Return: Always 0
  */
 int custom_myhelp(custom_info_t *info)
 {
     char **arg_array;
+    int i;
 
     arg_array = info->argv;
     custom_puts("help call works. Function not yet implemented \n");
-    
-    for (int i = 0; arg_array[i]; i++)
+
+    i = 0;
+    while (arg_array[i])
     {
         custom_puts(arg_array[i]);
+        i++;
     }
-    
+
     return (0);
 }
 

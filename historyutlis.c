@@ -1,4 +1,4 @@
-#include "custom_shell.h"
+#include "shell.h"
 
 /**
  * custom_get_history_file - gets the history file
@@ -13,7 +13,7 @@ char *custom_get_history_file(custom_info_t *info)
     dir = custom_getenv(info, "HOME=");
     if (!dir)
         return (NULL);
-    buf = custom_malloc(sizeof(char) * (custom_strlen(dir) + custom_strlen(CUSTOM_HIST_FILE) + 2));
+    buf = malloc(sizeof(char) * (custom_strlen(dir) + custom_strlen(CUSTOM_HIST_FILE) + 2));
     if (!buf)
         return (NULL);
     buf[0] = 0;
@@ -33,7 +33,7 @@ int custom_write_history(custom_info_t *info)
 {
     ssize_t fd;
     char *filename = custom_get_history_file(info);
-    list_t *node = NULL;
+    custom_list_t *node = NULL;
 
     if (!filename)
         return (-1);
@@ -47,7 +47,7 @@ int custom_write_history(custom_info_t *info)
         custom_putsfd(node->str, fd);
         custom_putfd('\n', fd);
     }
-    custom_putfd(BUF_FLUSH, fd);
+    custom_putfd(CUSTOM_BUF_FLUSH, fd);
     close(fd);
     return (1);
 }
@@ -76,13 +76,13 @@ int custom_read_history(custom_info_t *info)
         fsize = st.st_size;
     if (fsize < 2)
         return (0);
-    buf = custom_malloc(sizeof(char) * (fsize + 1));
+    buf = malloc(sizeof(char) * (fsize + 1));
     if (!buf)
         return (0);
     rdlen = read(fd, buf, fsize);
     buf[fsize] = 0;
     if (rdlen <= 0)
-        return (custom_free(buf), 0);
+        return (free(buf), 0);
     close(fd);
     for (i = 0; i < fsize; i++)
         if (buf[i] == '\n')
@@ -93,7 +93,7 @@ int custom_read_history(custom_info_t *info)
         }
     if (last != i)
         custom_build_history_list(info, buf + last, linecount++);
-    custom_free(buf);
+    free(buf);
     info->histcount = linecount;
     while (info->histcount-- >= CUSTOM_HIST_MAX)
         custom_delete_node_at_index(&(info->history), 0);
@@ -111,7 +111,7 @@ int custom_read_history(custom_info_t *info)
  */
 int custom_build_history_list(custom_info_t *info, char *buf, int linecount)
 {
-    list_t *node = NULL;
+    custom_list_t *node = NULL;
 
     if (info->history)
         node = info->history;
@@ -130,7 +130,7 @@ int custom_build_history_list(custom_info_t *info, char *buf, int linecount)
  */
 int custom_renumber_history(custom_info_t *info)
 {
-    list_t *node = info->history;
+    custom_list_t *node = info->history;
     int i = 0;
 
     while (node)
